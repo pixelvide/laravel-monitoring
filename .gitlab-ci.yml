@@ -1,0 +1,19 @@
+# You can override the included template(s) by including variable overrides
+# See https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+# Note that environment variables can be set in several places
+# See https://docs.gitlab.com/ee/ci/variables/#priority-of-environment-variables
+
+include: 
+  - project: 'devops/continuous-delivery/ci-templates'
+    file: 'Release/ECR-Public.gitlab-ci.yml'
+
+build_composer:
+  image: public.ecr.aws/pixelvide/php:7.4
+  stage: build
+  script:
+    - composer update -n -o --apcu-autoloader -a
+    - composer dumpautoload -o
+  artifacts:
+    expire_in: 3 days
+    paths:
+      - vendor/**
